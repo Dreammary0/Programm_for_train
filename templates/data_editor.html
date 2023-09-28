@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Расписание поездов</title>
     <link rel="stylesheet" type="text/css" href="/static/css/menu.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/table.css"/>
@@ -20,46 +20,48 @@
 </header>
 
 <div>
+    <h2>База поездов:</h2>
+
     <form>
         <label for="train-number">Номер поезда:</label>
-        <input style="width: 80px;" type="text" id="train-number" name="train-number" required>
+        <input style="width: 60px;" type="text" id="train-number" name="train-number" required>
 
         <label for="train-type">Тип поезда:</label>
-        <select id="train-type" name="train-type" required>
-            <option value="">Выберите</option>
-            {% for i in train_types %}
-                <option value="{{ i }}">
-                    {{ i }}
+        <select style="width: 185px;" id="train-type" name="train-type" required>
+            <option value="" disabled>Выберите</option>
+            {% for train in train_types %}
+                <option value="{{ loop.index - 1 }}">
+                    {{ train.train_type_name }}
                 </option>
             {% endfor %}
         </select>
 
-        <label for="distance">Дальность следования:</label>
-        <input style="width: 80px;" type="text" id="distance" name="distance" required>
         <label for="speed">Скорость поезда:</label>
-        <input style="width: 80px;" type="text" id="speed" name="speed" required>
-        <button type="submit" id="addTrain" name='addTrain'>Добавить</button>
-        <button type="submit" id="delTrain" name='delTrain'>Удалить</button>
+        <input style="width: 80px;" type="number" min=0 id="speed" name="speed" required>
+        <label for="distance">Дальность следования:</label>
+        <input style="width: 80px;" type="number" min=0 id="distance" name="distance" required>
+        <input type="submit" class="button" id="addTrain" name='addTrain' value="Добавить">
+        <input type="submit" class="button" id="delTrain" name='delTrain' value="Удалить">
     </form>
 
-    <div class="conteiner">
+    <div class="container">
         <table class="fixed-table">
             <thead>
             <tr>
                 <th>Номер поезда</th>
                 <th>Тип поезда</th>
-                <th>Дальность следования</th>
                 <th>Скорость поезда</th>
+                <th>Дальность следования</th>
 
             </tr>
             </thead>
             <tbody>
             {% for train in trains %}
                 <tr>
-                    <td>{{ train[0] }}</td>
-                    <td>{{ train[1] }}</td>
-                    <td>{{ train[2] }}</td>
-                    <td>{{ train[3] }}</td>
+                    <td>{{ train.train_name }}</td>
+                    <td>{{ train.train_type.train_type_name }}</td>
+                    <td>{{ train.train_speed }} км/ч</td>
+                    <td>{{ train.train_distance }} км</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -68,22 +70,22 @@
 
 </div>
 <div>
-    <form>
+    <h2>База маршрутов поездок:</h2>
 
-        <label for="routes">Маршруты поездок:</label>
-        <select id="routes" name="routes" required>
-            <option value="">Выберите</option>
-            {% for i in travel_trips %}
-                <option value="{{ i }}">
-                    {{ i }}
+    <form>
+        <label for="route">Маршруты поездок:</label>
+        <select id="route" name="route" required>
+            <option value="" disabled>Выберите маршрут</option>
+            {% for route in all_routes %}
+                <option value={{ loop.index - 1 }}>
+                    {{ route.start_city }} - {{ route.end_city }} ({{ route.distance }} км)
                 </option>
             {% endfor %}
         </select>
-
-        <button type="submit" id='addTravelTrip' name='addTravelTrip'>Добавить</button>
-        <button type="submit" id='delTravelTrip' name='delTravelTrip'>Удалить</button>
+        <input type="submit" class="button" id='addTravelTrip' name='addTravelTrip' value="Добавить">
+        <input type="submit" class="button" id='delTravelTrip' name='delTravelTrip' value="Удалить">
     </form>
-    <div class="conteiner">
+    <div class="container">
         <table class="fixed-table">
             <thead>
             <tr>
@@ -91,9 +93,9 @@
             </tr>
             </thead>
             <tbody>
-            {% for trip in travel_trips %}
+            {% for route in current_routes %}
                 <tr>
-                    <td>{{ trip }}</td>
+                    <td>{{ route.start_city }} - {{ route.end_city }} ({{ route.distance }} км)</td>
                 </tr>
             {% endfor %}
             </tbody>

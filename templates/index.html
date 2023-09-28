@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Рассписание поездов</title>
+    <title>Расписание поездов</title>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/menu.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/table.css"/>
@@ -20,16 +20,15 @@
     </nav>
 </header>
 <div>
-
+    <h2>База городов:</h2>
     <form>
         <label for="city">Город:</label>
         <input type="text" id="city" name="city" required>
-        <button type="submit" id="addCity" name='addCity'>Добавить</button>
-        <button type="submit" id="delCity" name='delCity'>Удалить</button>
-
+        <input type="submit" class="button" id="addCity" name='addCity' value="Добавить">
+        <input type="submit" class="button" id="delCity" name='delCity' value="Удалить">
     </form>
 
-    <div class="conteiner">
+    <div class="container">
         <table class="fixed-table">
             <thead>
             <tr>
@@ -48,19 +47,20 @@
 
 </div>
 <div>
+    <h2>База маршрутов:</h2>
+
     <form>
         <label for="departure">Место отправления:</label>
         <input type="text" id="departure" name="departure" required>
         <label for="arrival">Место прибытия:</label>
         <input type="text" id="arrival" name="arrival" required>
         <label for="distance">Дальность поездки:</label>
-        <input style="width: 80px;" type="text" id="distance" name="distance" required>
-        <button type="submit" id="addTrip">Добавить</button>
-        <button type="submit" id="delTrip" name='delTrip'>Удалить</button>
-
+        <input style="width: 80px;" type="number" min=0 id="distance" name="distance" required>
+        <input type="submit" class="button" id="addRoute" name='addRoute' value="Добавить">
+        <input type="submit" class="button" id="delRoute" name='delRoute' value="Удалить">
     </form>
 
-    <div class="conteiner">
+    <div class="container">
         <table class="fixed-table">
             <thead>
             <tr>
@@ -70,12 +70,11 @@
             </tr>
             </thead>
             <tbody>
-            {% for trip in trips %}
+            {% for route in routes %}
                 <tr>
-                    <td>{{ trip[0] }}</td>
-                    <td>{{ trip[1] }}</td>
-                    <td>{{ trip[2] }}</td>
-
+                    <td>{{ route.start_city }}</td>
+                    <td>{{ route.end_city }}</td>
+                    <td>{{ route.distance }} км</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -84,21 +83,23 @@
 
 </div>
 <div>
+    <h2>База типов поезда:</h2>
+
     <form>
         <label for="trainType">Тип поезда:</label>
-        <input type="text" id="trainType" name="trainType" required>
+        <input style="width: 150px;" type="text" id="trainType" name="trainType" required>
         <label for="speed">Скорость движения:</label>
-        <input style="width: 80px;margin-right: 0px;" type="text" id="speedFrom" name="speedFrom" required>
-        <input style="width: 80px;" type="text" id="speedTo" name="speedTo" required>
+        <input style="width: 80px;margin-right: 0;" type="number" min=0 id="speedFrom" name="speedFrom" required>
+        <input style="width: 80px;" type="number" min=0 id="speedTo" name="speedTo" required>
         <label for="range">Дальность следования:</label>
-        <input style="width: 80px;margin-right: 0px" type="text" id="rangeFrom" name="rangeFrom" required>
-        <input style="width: 80px;" type="text" id="rangeTo" name="rangeTo" required>
-        <button type="submit" id="addTrainType" name="addTrainType">Добавить</button>
-        <button type="submit" id="delTrainType" name='delTrainType'>Удалить</button>
+        <input style="width: 80px;margin-right: 0;" type="number" min=0 id="rangeFrom" name="rangeFrom" required>
+        <input style="width: 80px;" type="number" min=0 id="rangeTo" name="rangeTo" required>
+        <input type="submit" class="button" id="addTrainType" name='addTrainType' value="Добавить">
+        <input type="submit" class="button" id="delTrainType" name='delTrainType' value="Удалить">
 
     </form>
 
-    <div class="conteiner">
+    <div class="container">
         <table class="fixed-table">
             <thead>
             <tr>
@@ -108,16 +109,20 @@
             </tr>
             </thead>
             <tbody>
-            {% for trip in trips %}
+            {% for train_type in train_types %}
                 <tr>
-                    <td>{{ trip[0] }}</td>
-                    <td>{{ trip[1] }} - {{ trip[2] }} </td>
-                    <td>{{ trip[3] }} - {{ trip[4] }} </td>
+                    <td>{{ train_type.train_type_name }}</td>
+                    <td>{{ train_type.train_speed_min }} - {{ train_type.train_speed_max }} км/ч</td>
+                    <td>{{ train_type.train_distance_min }} - {{ train_type.train_distance_max }} км</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+<form style="all: unset;">
+    <input style="float: right; color: white; background-color: darkred; margin-bottom: 10px;" type="submit"
+           class="button" name="refill" value="Перезаполнить">
+</form>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Расписание поездов</title>
     <link rel="stylesheet" type="text/css" href="/static/css/menu.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
     <link rel="stylesheet" type="text/css" href="/static/css/table.css"/>
@@ -19,31 +19,58 @@
     </nav>
 </header>
 
-<form>
+<form style="background-color: white;">
     <div>
-        <button style="padding: 15px;font-size: 16px;font-weight: 700;" id='generate' type="button" onclick="generateSchedule({{ lenerror }})">Сгенерировать расписание</button>
+        <button class="button"
+                style="padding: 15px;font-size: 16px; font-weight: 700; display: block; margin: 0 auto;font-family: Georgia, serif;"
+                id='generate' type="button" onclick="generateSchedule({{ len(errors) }})">Сгенерировать расписание
+        </button>
     </div>
 
     <div id="errors" style="display:none;">
-        {% for error in errors %}
-            error <br>
-        {% endfor %}
+        <p>{{ errors }}</p>
     </div>
 </form>
 
-<div id="scheduleTable" style="display:none;" class="conteiner">
-    {% set n = len(relation) %}
+<div id="scheduleTable" style="display:none; height: 445px;" class="container">
+    {% set n = len(df) %}
     <table class="fixed-table">
+        <thead>
         <tr>
-            {% for name in relation.dtypes.index %}
+            {% for name in df.dtypes.index %}
                 <th>{{ name }}</th>
             {% endfor %}
         </tr>
+        </thead>
         <tbody>
         {% for i in range(n) %}
             <tr>
-                {% for name in relation.dtypes.index %}
-                    <td> {{ relation.loc[i, name] }} </td>
+                {% for name in df.dtypes.index %}
+                    <td> {{ df.loc[i, name] }} </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br><br>
+
+<div id="scheduleTable1" style="display:none; height: 445px;" class="container">
+    {% set n = len(df1) %}
+    <table class="fixed-table">
+        <thead>
+        <tr>
+            {% for name in df1.dtypes.index %}
+                <th>{{ name }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in range(n) %}
+            <tr>
+                {% for name in df1.dtypes.index %}
+                    <td> {{ df1.loc[i, name] }} </td>
                 {% endfor %}
             </tr>
         {% endfor %}
@@ -56,8 +83,8 @@
     function generateSchedule(error) {
         if (error === 0) {
             document.getElementById("scheduleTable").style.display = "block";
+            document.getElementById("scheduleTable1").style.display = "block";
             document.getElementById("generate").style.background = "green";
-
         } else {
             document.getElementById("errors").style.display = "block";
             document.getElementById("generate").style.background = "darkred";

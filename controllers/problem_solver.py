@@ -1,31 +1,37 @@
 import flask
-import pandas
-import openpyxl
+from flask import render_template
 
 from app import app
-from flask import render_template, request, session
+from ontology.main import *
 
 
 @app.route('/problem_solver', methods=['get'])
 def problem_solver():
+    # refill()
+    with open('ontology_of_knowledge.pickle', 'rb') as load_file:
+        ontology_of_knowledge = pickle.load(load_file)
+    with open('ontology_of_reality.pickle', 'rb') as load_file:
+        ontology_of_reality = pickle.load(load_file)
 
-    # Датафрейм для примера
-    data = [[1, 2, 3, 4, 5, 6, 7, 8, 9],
-            [10, 11, 12, 13, 14, 15, 16, 17, 18],
-            [19, 20, 21, 22, 23, 24, 25, 26, 27],
-            [28, 29, 30, 31, 32, 33, 34, 35, 36],
-            [37, 38, 39, 40, 41, 42, 43, 44, 45]]
-    columns = ['col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8', 'col9']
-    df = pandas.DataFrame(data=data, columns=columns)
+    result = call_gen_schedule(ontology_of_knowledge, ontology_of_reality)
 
-    #   Список ошибок (если пустой, отдаст таблицу, иначе выведет список ошибок)
-    errors = []
+    # Строка ошибок (если пустая, отдаст таблицу, иначе выведет ошибки)
+    errors = ''
+    if type(result) == str:
+        errors = result
+        errors = flask.Markup(errors.replace('\n', '<br>'))
+        result = pandas.DataFrame()
+        result1 = pandas.DataFrame()
+    else:
+        result1 = result.copy()
+        result1 = result1.sort_values(by=['Город отправления', 'Время отправления'])
+        result1 = result1.reset_index(drop=True)
 
     html = render_template(
         'problem_solver.html',
-    errors = errors,
-    relation = df,
-    len = len,
-    int = int,
-    lenerror = int(len(errors)))
+        errors=errors,
+        df=result,
+        df1=result1,
+        len=len,
+        int=int)
     return html
